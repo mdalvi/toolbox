@@ -1,0 +1,5 @@
+python setup.py bdist_wheel
+pip uninstall toolbox
+pip install dist\toolbox-1.0.0-py3-none-any.whl
+
+python -m pip install --upgrade dist/toolbox-1.0.0-py3.8.egg
