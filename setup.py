@@ -41,7 +41,8 @@ setup(
         'toolbox',
         'toolbox.datetime',
         'toolbox.pandas',
-        'toolbox.preprocessing'
+        'toolbox.preprocessing',
+        'toolbox.scikit_learn'
     ],
     classifiers=[
         "Intended Audience :: Developers",

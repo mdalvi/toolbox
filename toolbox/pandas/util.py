@@ -23,7 +23,7 @@ def load_dataframes(path_name):
     logger.debug(f"Loading dataframes from path {path_name}")
     for folder_name in glob(f"{path_name}/*"):
         dataset_data = dict()
-        for file_name in glob(f"{folder_name}/*"):
+        for file_name in glob(f"{folder_name}/*.pkl"):
             # https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format
             logger.debug(f'Invoking pd.DataFrame.read_pickle({file_name})')
             dataset_data[Path(file_name).stem] = pd.read_pickle(Path(file_name))
