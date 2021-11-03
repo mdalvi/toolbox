@@ -39,6 +39,7 @@ setup(
     license="MIT",
     packages=[
         'toolbox',
+        'toolbox.datetime',
         'toolbox.pandas',
         'toolbox.preprocessing'
     ],

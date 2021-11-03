@@ -1,6 +1,7 @@
 import logging
 import sys
 from glob import glob
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -15,6 +16,21 @@ def save_dataframes(path_name, **kwargs: {str: pd.DataFrame}) -> None:
         pd.to_pickle(kwargs_obj, f'{path_name}/{kwargs_name}.pkl')
 
 
+def load_dataframes(path_name):
+    global logger
+
+    result = list()
+    logger.debug(f"Loading dataframes from path {path_name}")
+    for folder_name in glob(f"{path_name}/*"):
+        dataset_data = dict()
+        for file_name in glob(f"{folder_name}/*"):
+            # https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format
+            logger.debug(f'Invoking pd.DataFrame.read_pickle({file_name})')
+            dataset_data[Path(file_name).stem] = pd.read_pickle(Path(file_name))
+        result.append(dataset_data)
+    return result
+
+
 def replace_inf(df: pd.DataFrame) -> pd.DataFrame:
     global logger
     logger.debug(f'Invoking pd.DataFrame.replace(-np.inf and +np.inf, np.nan)')
@@ -22,7 +38,6 @@ def replace_inf(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def concat_files_in_folder(path: str, extension: str = 'csv') -> pd.DataFrame:
-
     global logger
 
     # https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
