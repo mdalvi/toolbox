@@ -46,6 +46,8 @@ setup(
         'toolbox.requests',
         'toolbox.math',
         'toolbox.collections',
+        'toolbox.database',
+        'toolbox.kite',
     ],
     classifiers=[
         "Intended Audience :: Developers",
