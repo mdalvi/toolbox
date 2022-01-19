@@ -23,17 +23,12 @@ def get_y(y: pd.DataFrame, id_column: str, label_column: str) -> pd.Series:
 
 
 def filter_no_variance_columns(df: pd.DataFrame, threshold: float = 0.0) -> pd.DataFrame:
-    global logger
 
     df = replace_inf(df)
 
     # drop column having only np.nan values
     # https://stackoverflow.com/questions/45147100/pandas-drop-columns-with-all-nans
     df.dropna(axis=1, how='all', inplace=True)
-
-    logger.debug(f'Invoking VarianceThreshold(threshold={threshold}).fit()')
     variance_threshold = VarianceThreshold(threshold=threshold)
     variance_threshold.fit(df)
-
-    logger.debug(f'Filtering dataframe')
     return df[df.columns[variance_threshold.variances_ > threshold]]

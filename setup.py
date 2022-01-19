@@ -48,6 +48,8 @@ setup(
         'toolbox.collections',
         'toolbox.database',
         'toolbox.kite',
+        'toolbox.aws',
+        'toolbox.aws.s3',
     ],
     classifiers=[
         "Intended Audience :: Developers",
