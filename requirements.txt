@@ -35,7 +35,6 @@ setuptools==58.0.4
 six==1.16.0
 SQLAlchemy==1.4.27
 threadpoolctl==3.0.0
-toolbox==1.1.0
 tqdm==4.62.3
 Twisted==21.7.0
 twisted-iocpsupport==1.0.2
