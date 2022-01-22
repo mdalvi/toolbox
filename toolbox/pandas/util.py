@@ -5,12 +5,12 @@ import numpy as np
 import pandas as pd
 
 
-def save_dataframes(path_name, **kwargs: {str: pd.DataFrame}) -> None:
+def dump_dataframes(path_name, **kwargs: {str: pd.DataFrame}) -> None:
     for kwargs_name, kwargs_obj in kwargs.items():
         pd.to_pickle(kwargs_obj, f'{path_name}/{kwargs_name}.pkl')
 
 
-def load_dataframes(path_name):
+def load_dataframes(path_name: str):
     result = list()
     for folder_name in glob(f"{path_name}/*"):
         dataset_data = dict()
