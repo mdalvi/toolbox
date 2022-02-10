@@ -1,31 +1,21 @@
-import logging
-import sys
 from glob import glob
 from pathlib import Path
 
 import numpy as np
 from joblib import dump, load
 
-logger = logging.getLogger(__name__)
-handler = logging.StreamHandler(sys.stdout)
-logger.addHandler(handler)
 
-
-def save_extras(path_name: str, **kwargs: {str: object}) -> None:
+def dump_files(path_name: str, extension: str = 'joblib', **kwargs: {str: object}) -> None:
     for kwargs_name, kwargs_obj in kwargs.items():
-        dump(kwargs_obj, f'{path_name}/{kwargs_name}.joblib')
+        dump(kwargs_obj, f'{path_name}/{kwargs_name}.{extension}')
 
 
-def load_extras(path_name: str) -> list:
-    global logger
-
+def load_files(path_name: str, extension: str = 'joblib') -> list:
     result = list()
-    logger.debug(f"Loading extras from path {path_name}")
     for folder_name in glob(f"{path_name}/*"):
         extras_data = dict()
-        for file_name in glob(f"{folder_name}/*.joblib"):
+        for file_name in glob(f"{folder_name}/*.{extension}"):
             # https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format
-            logger.debug(f'Invoking joblib.load({file_name})')
             extras_data[Path(file_name).stem] = load(Path(file_name))
         result.append(extras_data)
     return result
