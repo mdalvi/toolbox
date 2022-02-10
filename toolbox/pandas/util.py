@@ -1,3 +1,4 @@
+import os
 from glob import glob
 from pathlib import Path
 
@@ -10,14 +11,15 @@ def dump_dataframes(path_name, **kwargs: {str: pd.DataFrame}) -> None:
         pd.to_pickle(kwargs_obj, f'{path_name}/{kwargs_name}.pkl')
 
 
-def load_dataframes(path_name: str):
+def load_dataframes(path_name: str) -> list:
     result = list()
     for folder_name in glob(f"{path_name}/*"):
-        dataset_data = dict()
-        for file_name in glob(f"{folder_name}/*.pkl"):
-            # https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format
-            dataset_data[Path(file_name).stem] = pd.read_pickle(Path(file_name))
-        result.append(dataset_data)
+        if os.path.isdir(folder_name):
+            dataset_data = dict()
+            for file_name in glob(f"{folder_name}/*.pkl"):
+                # https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format
+                dataset_data[Path(file_name).stem] = pd.read_pickle(Path(file_name))
+            result.append(dataset_data)
     return result
 
 
