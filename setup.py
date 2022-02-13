@@ -29,7 +29,7 @@ def get_version():
 
 setup(
     name="toolbox",
-    version="1.1.3",
+    version="1.2.4",
     author="mdalvi",
     author_email="milind.dalvi@turingequations.com",
     description="A toolbox of common functions used in various data science with python projects",
@@ -50,6 +50,8 @@ setup(
         'toolbox.kite',
         'toolbox.aws',
         'toolbox.aws.s3',
+        'toolbox.aws.sns',
+        'toolbox.core',
     ],
     classifiers=[
         "Intended Audience :: Developers",
