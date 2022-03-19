@@ -29,7 +29,7 @@ def get_version():
 
 setup(
     name="toolbox",
-    version="1.2.5",
+    version="1.2.7",
     author="mdalvi",
     author_email="milind.dalvi@turingequations.com",
     description="A toolbox of common functions used in various data science with python projects",
@@ -52,14 +52,15 @@ setup(
         'toolbox.aws.s3',
         'toolbox.aws.sns',
         'toolbox.core',
+        'toolbox.fno',
     ],
     classifiers=[
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8.5',
-    install_requires=file_contents("requirements.txt" if os.name == "nt" else "requirements_unix.txt"),
+    install_requires=file_contents("requirements_nt.txt" if os.name == "nt" else "requirements_unix.txt"),
     test_suite="tests",
 )
