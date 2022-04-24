@@ -90,3 +90,12 @@ class Kite(object):
         :return:
         """
         return self.kite.instruments(*args, **kwargs)
+
+    def place_order(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return self.kite.place_order(*args, **kwargs)
