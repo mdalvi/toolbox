@@ -64,3 +64,37 @@ def get_last_day_of_month(year, month, day='Thursday'):
 
     dt += timedelta(offset)
     return dt  # date
+
+
+def get_annualized_dte(dte_seconds):
+    """
+    Get Annualized DTE
+    :param dte_seconds: Days to expiry measured in seconds
+    :return: float
+    """
+    return (((dte_seconds / 60.) / 60.) / 24.) / 365.
+
+
+def get_strike_file_pattern(strike, expiry, trading_symbol, variant=False, spot_price=None, side=None, **kwargs):
+    """
+    Get name of strike file
+    :param strike: Option strike price
+    :param spot_price: Spot price
+    :param expiry: Expiry date
+    :param tradingsymbol: Trading symbol
+    :param variant: Bool, some historical files observed %Y instead of %y
+    :param side: PUT or CALL
+    :return:
+    """
+    assert ((spot_price is None and side is None) is False), "Both spot_price and side cannot be None"
+
+    sp = int(strike)
+    if side is None:
+        side = 'CE' if sp >= spot_price else 'PE'
+
+    if variant:
+        exp = expiry.strftime("%d%b%Y").upper()
+    else:
+        exp = expiry.strftime("%d%b%y").upper()
+
+    return f"{trading_symbol}{exp}{sp}{side}.NFO.csv"
