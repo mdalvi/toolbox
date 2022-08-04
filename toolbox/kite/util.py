@@ -1,3 +1,5 @@
+import time
+
 from kiteconnect import KiteConnect
 from kiteconnect.exceptions import DataException
 
@@ -6,7 +8,7 @@ from toolbox.requests.util import retry
 
 class Kite(object):
 
-    def __init__(self, api_key, access_token, debug=False):
+    def __init__(self, api_key, access_token, redis_client=None, debug=False):
         self.kite = KiteConnect(api_key=api_key, access_token=access_token, debug=debug)
 
         # Products
@@ -27,6 +29,7 @@ class Kite(object):
         self.VARIETY_BO = self.kite.VARIETY_BO
         self.VARIETY_CO = self.kite.VARIETY_CO
         self.VARIETY_AMO = self.kite.VARIETY_AMO
+        self.VARIETY_ICEBERG = self.kite.VARIETY_ICEBERG
 
         # Transaction type
         self.TRANSACTION_TYPE_BUY = self.kite.TRANSACTION_TYPE_BUY
@@ -35,6 +38,7 @@ class Kite(object):
         # Validity
         self.VALIDITY_DAY = self.kite.VALIDITY_DAY
         self.VALIDITY_IOC = self.kite.VALIDITY_IOC
+        self.VALIDITY_TTL = self.kite.VALIDITY_TTL
 
         # Position Type
         self.POSITION_TYPE_DAY = self.kite.POSITION_TYPE_DAY
@@ -71,6 +75,12 @@ class Kite(object):
         self.GTT_STATUS_REJECTED = self.kite.GTT_STATUS_REJECTED
         self.GTT_STATUS_DELETED = self.kite.GTT_STATUS_DELETED
 
+        self.redis = redis_client
+        self.po_cntr = 'toolbox:kite:place_order:cntr'
+        self.po_zero = 'toolbox:kite:place_order:zero'
+        if redis_client is not None:
+            self.redis.set(self.po_cntr, 0)
+
     @retry((DataException,), tries=5, delay=5)
     def historical_data(self, *args, **kwargs):
         """
@@ -93,9 +103,24 @@ class Kite(object):
 
     def place_order(self, *args, **kwargs):
         """
-
+        Note: The logic is not full-proof in multi-thread environment
         :param args:
         :param kwargs:
         :return:
         """
-        return self.kite.place_order(*args, **kwargs)
+        if self.redis is None:
+            raise AssertionError("redis not supplied in Kite instance")
+
+        delta = 1.
+        if int(self.redis.get(self.po_cntr)) <= 5:
+            self.redis.incr(self.po_cntr)
+            response = self.kite.place_order(*args, **kwargs)
+            self.redis.setex(self.po_zero, int(delta), time.perf_counter())  # setex(key, seconds, value)
+        else:
+            t0 = self.redis.get(self.po_zero)
+            if t0 is not None:
+                time.sleep(min(delta, max(0., delta - (time.perf_counter() - float(t0)))))
+            self.redis.set(self.po_cntr, 1)
+            response = self.kite.place_order(*args, **kwargs)
+            self.redis.setex(self.po_zero, int(delta), time.perf_counter())
+        return response

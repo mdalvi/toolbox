@@ -1,4 +1,5 @@
 import calendar
+import math
 import re
 from datetime import date, timedelta
 
@@ -7,6 +8,21 @@ from dateutil.relativedelta import relativedelta
 from toolbox.datetime.util import get_date_now
 from toolbox.datetime.util import get_datetime_now
 from toolbox.math.util import round_nearest
+
+
+def l_2_m(last_traded_price, transaction_type, scale=0.02, tick_size=0.05):
+    """
+    Limit to market price converter
+    :param last_traded_price: Last traded price of asset
+    :param transaction_type: Transaction side {BUY, SELL}
+    :param scale: Scale to market in percent
+    :param tick_size: Asset minimum tick size
+    :return: float
+    """
+    if transaction_type.lower() == 'buy':
+        return round(last_traded_price + (math.ceil((last_traded_price * scale) / tick_size) * tick_size), 2)
+    elif transaction_type.lower() == 'sell':
+        return round(last_traded_price - (math.ceil((last_traded_price * scale) / tick_size) * tick_size), 2)
 
 
 def get_options_ts_current_exp(session, model, time_zone):
