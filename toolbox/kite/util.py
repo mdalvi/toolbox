@@ -124,3 +124,11 @@ class Kite(object):
             response = self.kite.place_order(*args, **kwargs)
             self.redis.setex(self.po_zero, int(delta), time.perf_counter())
         return response
+
+    def place_gtt(self, *args, **kwargs):
+        """
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return self.kite.place_gtt(*args, **kwargs)
